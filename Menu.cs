@@ -54,7 +54,7 @@ namespace PracaDomowaCS
                     DisplayObjectsMenu();
                     return true;
                 case 3:
-                    Console.WriteLine("Wybrano opcję 3");
+                    DeleteChoice();
                     return true;
                 case 4:
                     Console.WriteLine("Wybrano wyjście. Program zakończył działanie.");
@@ -263,6 +263,100 @@ namespace PracaDomowaCS
                 Console.WriteLine($"{i.Key} -> {i.Value}");
             }
         }
+
+        public void DeleteChoice()
+        {
+            DatabaseType databaseType;
+            TableType tableType;
+            string tableChoice;
+
+            while (true)
+            {
+                Console.Clear();
+                Console.WriteLine("Z jakiej bazy danych chcesz usunac dane? [MySQL] lub [SQLite]");
+                string choice = Console.ReadLine().ToLower();
+
+                if (choice == "mysql")
+                {
+                    databaseType = DatabaseType.MYSQL;
+                    break;
+                }
+                else if (choice == "sqlite")
+                {
+                    databaseType = DatabaseType.SQLITE;
+                    break;
+                }
+
+            }
+
+            while (true)
+            {
+                Console.Clear();
+                Console.WriteLine("Z jakiej tabeli usuwamy dane? [Car] lub [Song]");
+                tableChoice = Console.ReadLine().ToLower();
+
+                if (tableChoice == "car")
+                {
+                    tableType = TableType.CAR;
+                    break;
+                }
+                else if (tableChoice == "song")
+                {
+                    tableType = TableType.SONG;
+                    break;
+                }
+
+            }
+
+            if (databaseType == DatabaseType.MYSQL)
+            {
+                if (tableType == TableType.CAR)
+                {
+                    FormatUtil.PrintMessages(FormatUtil.CarsToString(this.mysql.GetCars()));
+                }
+                else
+                {
+                    FormatUtil.PrintMessages(FormatUtil.SongsToString(this.mysql.GetSongs()));
+                }
+            }
+            else
+            {
+                if (tableType == TableType.CAR)
+                {
+                    FormatUtil.PrintMessages(FormatUtil.CarsToString(this.sqlite.GetCars()));
+                }
+                else
+                {
+                    FormatUtil.PrintMessages(FormatUtil.SongsToString(this.sqlite.GetSongs()));
+                }
+            }
+
+            Console.WriteLine("\nPodaj ID elementu ktory ma byc usuniety:");
+            while (true)
+            {
+
+                if (int.TryParse(Console.ReadLine(), out int choice))
+                {
+                    if (databaseType == DatabaseType.MYSQL)
+                    {
+                        this.mysql.DeleteData(FormatUtil.FirstCharToUpper(tableChoice), choice);
+                    }
+                    else
+                    {
+                        this.sqlite.DeleteData(FormatUtil.FirstCharToUpper(tableChoice), choice);
+                    }
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Niepoprawny format. Wprowadź liczbę.");
+                }
+
+                Console.WriteLine("Program zakonczyl dzialanie...");
+            }
+
+        }
+
 
         public void CreateChoice()
         {

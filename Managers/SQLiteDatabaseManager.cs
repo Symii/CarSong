@@ -14,7 +14,7 @@ using System.Xml.Linq;
 namespace PracaDomowaCS.Managers
 {
     // Install System.Data.Sqlite
-    internal class SQLiteDatabaseManager
+    public class SQLiteDatabaseManager
     {
         private string connectionString;
 
@@ -227,7 +227,7 @@ namespace PracaDomowaCS.Managers
                             }
                             catch (IndexOutOfRangeException e)
                             {
-                                return 0;
+                                return -1;
                             }
   
                         }
@@ -251,6 +251,21 @@ namespace PracaDomowaCS.Managers
                 {
                     cmd.Parameters.AddWithValue("@id", car.GetId());
 
+                    cmd.ExecuteNonQuery();
+                }
+                conn.Close();
+            }
+        }
+
+        public void DeleteData(string tableName, int id)
+        {
+            using (var conn = GetConnection())
+            {
+                conn.Open();
+                string query = $"DELETE FROM {tableName} WHERE id={id}";
+
+                using (var cmd = new SQLiteCommand(query, conn))
+                {
                     cmd.ExecuteNonQuery();
                 }
                 conn.Close();

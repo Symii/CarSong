@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace PracaDomowaCS.Managers
 {
     // Install MySQL Connector/NET
-    internal class MySQLDatabaseManager
+    public class MySQLDatabaseManager
     {
         private readonly string connectionString;
         public MySQLDatabaseManager(string server, string database, string username, string password)
@@ -228,18 +228,15 @@ namespace PracaDomowaCS.Managers
             conn.Close();
         }
 
-        public void DeleteData()
+        public void DeleteData(string tableName, int id)
         {
             MySqlConnection conn = GetConnection();
             conn.Open();
-            Console.WriteLine("Usuwanie danych z bazy...");
 
-            string deleteQuery = "DELETE FROM TwojaTabela WHERE ColumnName1 = @ValueToDelete";
+            string deleteQuery = $"DELETE FROM {tableName} WHERE id = {id}";
 
             using (MySqlCommand cmd = new MySqlCommand(deleteQuery, conn))
             {
-                cmd.Parameters.AddWithValue("@ValueToDelete", "Wartość1");
-
                 cmd.ExecuteNonQuery();
             }
 
